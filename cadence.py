@@ -98,7 +98,7 @@ if __name__ == '__main__':
     REDIRECT_URI = os.getenv('REDIRECT_URI')
     
     strava_api = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-    strava_api.getCadenceData();
+    strava_api.getCadenceData()
 
 # ----
 # Step 6: Print the data
