@@ -1,6 +1,7 @@
 from combiner import Combiner
 from cadence import StravaAPI
 from dotenv import load_dotenv
+from pprint import pprint
 import os
 
 load_dotenv()
@@ -13,4 +14,4 @@ data = strava.getCadenceData()
 cb = Combiner(arrs=data)
 
 print(cb.combine())
-print(len(cb.combine()))
+pprint(len(cb.combine()))
