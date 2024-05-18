@@ -12,3 +12,4 @@ randomize==0.14
 requests==2.31.0
 six==1.16.0
 urllib3==2.2.1
+spotipy==2.23.0

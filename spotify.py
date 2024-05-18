@@ -90,5 +90,3 @@ def add_to_queue(song_data):
         print("Current length of queue (sec):", round(time_elapsed_sec, 2))
 
         sleep(10) # todo fix
-
-add_to_queue()
