@@ -2,7 +2,15 @@ import requests
 import webbrowser
 from pprint import pprint
 from dotenv import load_dotenv
+from enum import Enum, auto
 import os
+
+class ActivityType(Enum):
+    RUN = "Run"
+    BIKE = "Ride"
+    WALK = "Walk"
+    HIKE = "Hike"
+
 
 class StravaAPI:
     def __init__(self, client_id, client_secret, redirect_uri):
@@ -14,7 +22,7 @@ class StravaAPI:
         self.access_token = None
     
 
-    def getCadenceData(self):
+    def getCadenceData(self, activity_type):
         # Step 2: Obtain the authorization code
         params = {
             'client_id': self.CLIENT_ID,
@@ -64,13 +72,14 @@ class StravaAPI:
         activityIds = []
         if activities:
             for activity in activities:
-                activityIds.append(activity['id'])
+                if activity['type'] == activity_type.value:
+                    activityIds.append(activity['id'])
 
         # step 7: make API calls to get activity streams
         data_only = []
-        max_requests = 3; # to prevent ourselves from going over Strava's imposed limit
+        max_requests = 10 # to prevent ourselves from going over Strava's imposed limit
         n = 0
-        runs_where_cadence_recorded = 0;
+        runs_where_cadence_recorded = 0
         for activityId in activityIds:
             if n >= max_requests:
                 break
@@ -90,9 +99,10 @@ class StravaAPI:
 
             activitiesStream = activitiesStream_response.json()
             if 'cadence' in activitiesStream:
+                
                 data_only.append(activitiesStream['cadence']['data'])
                 runs_where_cadence_recorded += 1
-        pprint("We found " + str(runs_where_cadence_recorded) + "/" + str(n) + " runs with data for cadence") 
+        pprint("We found " + str(runs_where_cadence_recorded) + "/" + str(n) + " " + str(activity_type) + " with data for cadence") 
         return data_only
 
 if __name__ == '__main__':
@@ -102,7 +112,7 @@ if __name__ == '__main__':
     REDIRECT_URI = os.getenv('REDIRECT_URI')
     
     strava_api = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-    strava_api.getCadenceData();
+    strava_api.getCadenceData(ActivityType.RUN);
 
 # ----
 # Step 6: Print the data
