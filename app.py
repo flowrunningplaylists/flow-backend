@@ -1,0 +1,43 @@
+from flask import Flask, request
+from combiner import Combiner
+from cadence import StravaAPI
+from dotenv import load_dotenv
+from spotify import *
+import os
+
+load_dotenv()
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+REDIRECT_URI = os.getenv('REDIRECT_URI')
+
+strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+cadence_data = strava.getCadenceData()
+
+app = Flask(__name__)
+
+@app.route('/api/demo', methods=['GET'])
+def demo():
+    return "Welcome The Flow API"
+
+@app.route('/recent', methods=['GET'])
+def getRecent():
+    # Call something like stava.getRecent() and return a json
+    return None
+
+@app.route('/playlist?activity=<name>', methods=['GET'])
+def getPlaylist():
+    activity = request.args.get('activity')
+    # call like get playlist or somthing bs
+
+
+    
+
+@app.route('/api/greeting', methods=['POST'])
+def getData():
+    data = request.get_json()
+    name = data.get('name')
+    return f"Hello, {name}!"
+
+if __name__ == '__main__':
+    app.run(debug=True)
+    
