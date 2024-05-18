@@ -22,8 +22,8 @@ class StravaAPI:
     def getCadenceData(self):
         # Step 2: Obtain the authorization code
         params = {
-            'client_id': CLIENT_ID,
-            'redirect_uri': REDIRECT_URI,
+            'client_id': self.CLIENT_ID,
+            'redirect_uri': self.REDIRECT_URI,
             'response_type': 'code',
             'scope': 'activity:read_all'
         }
@@ -39,8 +39,8 @@ class StravaAPI:
 
         # Step 4: Exchange authorization code for access token
         token_params = {
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET,
+            'client_id': self.CLIENT_ID,
+            'client_secret': self.CLIENT_SECRET,
             'code': auth_code,
             'grant_type': 'authorization_code'
         }
@@ -94,8 +94,6 @@ class StravaAPI:
 
             activitiesStream = activitiesStream_response.json()
             data_only.append(activitiesStream['cadence']['data'])
-            # pprint()
-        pprint(data_only)
         return data_only
 
 if __name__ == '__main__':
