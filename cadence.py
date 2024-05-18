@@ -1,13 +1,8 @@
 import requests
 import webbrowser
 from pprint import pprint
-
-# Strava API application credentials
-# CLIENT_ID = '126930'
-# CLIENT_SECRET = 'a8f24465f2e64522b1205955dfbd088c0a706188'
-# REDIRECT_URI = 'http://localhost'  # Your redirect URI
-# AUTH_URL = 'https://www.strava.com/oauth/authorize'
-# TOKEN_URL = 'https://www.strava.com/oauth/token'
+from dotenv import load_dotenv
+import os
 
 class StravaAPI:
     def __init__(self, client_id, client_secret, redirect_uri):
@@ -99,9 +94,10 @@ class StravaAPI:
         return data_only
 
 if __name__ == '__main__':
-    CLIENT_ID = '126930'
-    CLIENT_SECRET = 'a8f24465f2e64522b1205955dfbd088c0a706188'
-    REDIRECT_URI = 'http://localhost'  # Your redirect URI
+    load_dotenv()
+    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+    REDIRECT_URI = os.getenv('REDIRECT_URI')
     
     strava_api = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
     strava_api.getCadenceData();
