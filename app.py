@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from combiner import Combiner
 from cadence import StravaAPI
 from dotenv import load_dotenv
@@ -11,7 +11,8 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-cadence_data = strava.getCadenceData()
+strava.autheticateAndGetAllActivities()
+# cadence_data = strava.getCadenceData()
 
 app = Flask(__name__)
 
@@ -22,7 +23,8 @@ def demo():
 @app.route('/recent', methods=['GET'])
 def getRecent():
     # Call something like stava.getRecent() and return a json
-    return None
+    json = jsonify(strava.getRecentActivities())
+    return json
 
 @app.route('/playlist?activity=<name>', methods=['GET'])
 def getPlaylist():
