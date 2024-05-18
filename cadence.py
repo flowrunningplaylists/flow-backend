@@ -2,6 +2,7 @@ import requests
 import webbrowser
 from pprint import pprint
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 from enum import Enum, auto
 import os
 
@@ -20,9 +21,9 @@ class StravaAPI:
         self.AUTH_URL = 'https://www.strava.com/oauth/authorize'
         self.TOKEN_URL = 'https://www.strava.com/oauth/token'
         self.access_token = None
+        self.activities = None
     
-
-    def getCadenceData(self, activity_type):
+    def autheticateAndGetAllActivities(self):
         # Step 2: Obtain the authorization code
         params = {
             'client_id': self.CLIENT_ID,
@@ -49,12 +50,12 @@ class StravaAPI:
         }
         response = requests.post(self.TOKEN_URL, data=token_params)
         tokens = response.json()
-        access_token = tokens['access_token']
+        self.access_token = tokens['access_token']
 
         # Step 5: Make an API call to get the athlete's activities
         activities_url = 'https://www.strava.com/api/v3/athlete/activities'
         headers = {
-            'Authorization': f'Bearer {access_token}'
+            'Authorization': f'Bearer {self.access_token}'
         }
         params = {
             'per_page': 30,
@@ -65,13 +66,15 @@ class StravaAPI:
         # pprint(activities)
         if 'errors' in activities:
             pprint("Rate Limit has probably been exceeded. Exiting now.")
-            exit()
+            return False
+        self.activities = activities
+        return True 
 
-
+    def getCadenceData(self, activity_type):
         # step 6: extract activity ids
         activityIds = []
-        if activities:
-            for activity in activities:
+        if self.activities:
+            for activity in self.activities:
                 if activity['type'] == activity_type.value:
                     activityIds.append(activity['id'])
 
@@ -86,7 +89,7 @@ class StravaAPI:
             activitiesStream_url = 'https://www.strava.com/api/v3/activities/' + str(activityId) + '/streams'
             
             headers = {
-                'Authorization': f'Bearer {access_token}'
+                'Authorization': f'Bearer {self.access_token}'
             }
             params = { #StreamSet get_activity_streams(id, keys, key_by_type)
                 'id': activityId,
@@ -105,6 +108,31 @@ class StravaAPI:
         pprint("We found " + str(runs_where_cadence_recorded) + "/" + str(n) + " " + str(activity_type) + " with data for cadence") 
         return data_only
 
+    def getRecentActivities(self):
+        last_week_activities = []
+        print(len(self.activities))
+        for activity in self.activities:
+            date = datetime.strptime(activity['start_date'], "%Y-%m-%dT%H:%M:%SZ").date()
+            # print(datetime.now().date())
+            # print(datetime.now().date() - timedelta(weeks=3))
+
+            if date > (datetime.now().date() - timedelta(weeks=3)):
+                data = {
+                    'date': activity['start_date'],
+                    'name': activity['name'],
+                    'distance': activity['distance'],
+                    'duration': activity['moving_time'],
+                    'average_cadence': activity['average_cadence'] if 'average_cadence' in activity else None
+                }
+                last_week_activities.append(data)
+        print(len(last_week_activities))
+        print(last_week_activities)
+        
+        return data
+
+
+
+
 if __name__ == '__main__':
     load_dotenv()
     CLIENT_ID = os.getenv('CLIENT_ID')
@@ -112,7 +140,10 @@ if __name__ == '__main__':
     REDIRECT_URI = os.getenv('REDIRECT_URI')
     
     strava_api = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-    strava_api.getCadenceData(ActivityType.RUN);
+    strava_api.autheticateAndGetAllActivities()
+    # strava_api.getCadenceData(ActivityType.RUN);
+
+    strava_api.getRecentActivities()
 
 # ----
 # Step 6: Print the data

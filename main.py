@@ -9,10 +9,16 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
-activity_type = ActivityType.RUN # user can choose any activity
+activity_type = ActivityType.RUN # will be dynamic value later
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+if not strava.autheticateAndGetAllActivities():
+    print("Error: probably out of access tokens for Strava's API")
+    exit()
 data = strava.getCadenceData(activity_type)
+recent = strava.getRecentActivities()
+print(recent)
+
 cb = Combiner(arrs=data)
 
 combined_list = cb.combine()
