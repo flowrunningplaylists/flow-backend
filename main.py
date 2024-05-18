@@ -13,5 +13,5 @@ strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 data = strava.getCadenceData()
 cb = Combiner(arrs=data)
 
-print(cb.combine())
-pprint(len(cb.combine()))
+pprint(cb.combine())
+print(len(cb.combine()))
