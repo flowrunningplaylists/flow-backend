@@ -36,7 +36,7 @@ def login():
 
 #step 1
 @app.route('/loginspotify')
-def login():
+def loginspotify():
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID_SPOTIFY, client_secret=CLIENT_SECRET_SPOTIFY, redirect_uri=REDIRECT_URI_SPOTIFY, scope=spotify.SCOPE))
     spotify.sp = sp
     # auth_url = (
