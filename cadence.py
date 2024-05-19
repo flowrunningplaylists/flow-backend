@@ -128,7 +128,7 @@ class StravaAPI:
         print(len(last_week_activities))
         print(last_week_activities)
         
-        return data
+        return last_week_activities
 
 
 
