@@ -19,6 +19,9 @@ class SpotifyAPI:
         self.ERROR_THRESHOLD = 5
         self.BPM_THRESHOLD = 110
         self.LOUDNESS_DROP_THRESHOLD = -4
+        self.NUM_TOP_SONGS = 20
+        self.SONG_LIST_LEN = 5
+
         self.sp = None
         self.sample_cadence_data = None
         self.song_data = {}
@@ -30,18 +33,20 @@ class SpotifyAPI:
         self.seed_tracks = []
         self.seed_genre = []
         self.seed_artist = []
-        self.songs_added_to_queue_ids = []
+        self.generated_song_list = {}
+
         # self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
 
     def auth(self):
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
 
 
-    def readDataAndAuthenticate(self, combined_list):
-        # Read JSON file and assign to variable
+    def load_cadence_data(self, cadence_data):
+        # # testig
+        # # Read JSON file and assign to variable
         # with open('combined.txt', 'r') as file:
         #     self.sample_cadence_data = json.load(file)
-        self.sample_cadence_data = combined_list
+        self.sample_cadence_data = cadence_data
 
         #authenticate
         # self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
@@ -61,17 +66,22 @@ class SpotifyAPI:
         average = total / count
         return average
     
-    def get_top_songs_data(self, num_songs=10):
-        # data = {}
+    def get_user_devices(self):
+        return self.sp.devices()
 
-        results = self.sp.current_user_top_tracks(limit=num_songs, offset=0, time_range='medium_term')
+    def get_top_songs_data(self):
+
+        results = self.sp.current_user_top_tracks(limit=self.NUM_TOP_SONGS, offset=0, time_range='medium_term')
         for idx, item in enumerate(results['items']):
             id = item['id']
             name = item['name']
             duration = round(item['duration_ms']/1000, 2)
             uri = item['uri']
+            artist = [artist["name"] for artist in item['artists']]
+            image = [image['url'] for image in item['album']['images']]
 
-            self.song_data[id] = {"name" : name, "duration" : duration, "uri" : uri}
+            self.song_data[id] = {"name" : name, "duration" : duration, "uri" : uri, 'image' : image, "artist" : artist}
+    
             if idx < 3:
                 self.seed_tracks.append(str(id))
 
@@ -79,10 +89,12 @@ class SpotifyAPI:
 
         # print("seed_tracks: " + self.seed_tracks)
 
-        # bpm_arr = []
-        # running_bpm_arr = []
         for id in self.song_data:
-            result = self.sp.audio_analysis(track_id=id)
+            try:
+                result = self.sp.audio_analysis(track_id=id)
+            except Exception as e:
+                print("An error occured", e)
+
             bpm = result['track']['tempo']
             self.song_data[id]['bpm'] = bpm
             print(bpm)
@@ -98,7 +110,6 @@ class SpotifyAPI:
         
         return self.song_data
     
-    #todo add_songs()
     def add_recommended_songs(self):
         new_songs = {}
 
@@ -109,42 +120,53 @@ class SpotifyAPI:
             name = item['name']
             duration = round(item['duration_ms']/1000, 2)
             uri = item['uri']
+            artist = [artist["name"] for artist in item['artists']]
+            image = [image['url'] for image in item['album']['images']]
 
-            new_songs[id] = {"name" : name, "duration" : duration, "uri" : uri}
+            new_songs[id] = {"name" : name, "duration" : duration, "uri" : uri, 'image' : image, "artist" : artist}
             
             print("ADDED", idx+1, name, duration, id, uri) 
 
         for id in new_songs:
-            result = self.sp.audio_analysis(track_id=id)
+            try:
+                result = self.sp.audio_analysis(track_id=id)
+            except Exception as e:
+                print("An error occured", e)
+
             bpm = result['track']['tempo']
             new_songs[id]['bpm'] = bpm
             print(bpm)
             
             # double it if it is too low
             running_bpm = bpm
-            if bpm < 110:
+            if bpm < self.BPM_THRESHOLD:
                 running_bpm *= 2
             
             # running_bpm_arr.append(running_bpm)
             # bpm_arr.append(bpm)
             new_songs[id]['running_bpm'] = running_bpm
+            # sleep(10)
         
         self.song_data.update(new_songs)
         
         return self.song_data
 
 
-    def add_to_queue(self):
+    def add_to_song_list(self):
         time_elapsed_sec = 0 # total duration of songs played
 
-        for i in range(5): # todo fix
+        while(len(self.generated_song_list) <= self.SONG_LIST_LEN): 
             target_spm = round(self.get_cadence_avg(time_elapsed_sec, 200) * 2, 2)
             print("Target spm:", target_spm)
 
+            print("TEST",self.song_data)
+
             closest_entry = min(self.song_data.items(), key=lambda item: abs(item[1]['running_bpm'] - target_spm))
             print(closest_entry)
-
-            error = abs(closest_entry[1]['running_bpm'] - target_spm)
+            
+            song_id = closest_entry[0]
+            song_attributes = closest_entry[1]
+            error = abs(song_attributes['running_bpm'] - target_spm)
 
             print("\nError:", error, "\n")
 
@@ -154,19 +176,44 @@ class SpotifyAPI:
                 self.add_recommended_songs()
 
             else:
-                # add a song to queue
-                self.sp.add_to_queue(uri=closest_entry[1]['uri']) # todo set default device when no active device is detected
-                print(f"Added {closest_entry[1]['name']} to queue")
-                self.songs_added_to_queue_ids.append(closest_entry[0])
+                # add a song to generated list
+                self.generated_song_list[song_id] = {
+                    'name': song_attributes['name'],
+                    'artist': song_attributes['artist'],
+                    'image': song_attributes['image'],
+                    'length': song_attributes['duration'],
+                    'bpm': song_attributes['bpm'],
+                    'running_bpm': song_attributes['running_bpm'],
+                    'uri': song_attributes['uri']
+                }
+                print(f"Added {song_attributes['name']} to generated list")
 
-                del self.song_data[closest_entry[0]]
+                # remove the song from original list after it's been added
+                del self.song_data[song_id]
 
-                time_elapsed_sec += closest_entry[1]['duration']
+                time_elapsed_sec += song_attributes['duration']
                 print("Current length of queue (sec):", round(time_elapsed_sec, 2))
 
-            sleep(5) # todo fix 
+            # sleep(10) 
 
-# result = sp.audio_analysis("4pi0Elz7B7cLfw37J3bYm9")
+
+    def add_songs_to_queue(self):
+        for song_id in self.generated_song_list:
+            self.sp.add_to_queue(uri=self.generated_song_list[song_id]['uri']) # todo set default device when no active device is detected (nvm too hard)
+            print(f"Added {self.generated_song_list[song_id]['name']} to queue")
+
+
+    def create_playlist(self, playlist_name='My awesome running playlist'):
+        print("Creating playlist")
+        user_id = self.sp.current_user()['id']
+        result = self.sp.user_playlist_create(user=user_id, name=playlist_name, public=False)
+        playlist_id = result['id']
+        self.sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=self.generated_song_list.keys())
+
+
+    def get_generated_song_list(self):
+        return self.generated_song_list
+
     # given sections array of a song, returns sections where there is a suddenly decrease in loudness
     def get_loudness_drop_sections(self, sections):
         if len(sections) < 1:
@@ -199,7 +246,10 @@ class SpotifyAPI:
             self.update_playback_state()
 
             if self.is_playing:
-                result = self.sp.audio_analysis(self.current_id)
+                try:
+                    result = self.sp.audio_analysis(self.current_id)
+                except Exception as e:
+                    print("An error occured", e)
                 target_sections = self.get_loudness_drop_sections(result['sections'])
                 print(target_sections)
                 if target_sections:
@@ -215,24 +265,15 @@ class SpotifyAPI:
                     # if abs(self.playback_progress_sec - target_time) < 0.5:
                     self.sp.next_track()
             
-    # creates playlist with items added to queue and all songs played so far
-    def create_playlist(self, playlist_name='My awesome running playlist'):
-        print("Creating playlist")
-        user_id = self.sp.current_user()['id']
-        result = self.sp.user_playlist_create(user=user_id, name=playlist_name, public=False)
-        playlist_id = result['id']
-        if self.songs_added_to_queue_ids:
-            self.sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=self.songs_added_to_queue_ids)
-
-        
-
     
-    # returns currently playing and queue, e.g. {'currently_playing': None, 'queue': []}
-    def get_playing_and_queue(self):
-        return self.sp.queue()
-    
-# spotify = SpotifyAPI()
-# spotify.readDataAndAuthenticate()
-# spotify.get_top_songs_data()
-# spotify.add_to_queue()
-# spotify.create_playlist()
+# CLIENT_ID="5c17cfd2c3884a6aa0b8d92d21ccf51e"
+# CLIENT_SECRET="ce4bd0c559f149aeb281ecfd8d84da9b"
+# REDIRECT_URI="http://localhost:3000/callback"
+# spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+# spotify.auth()
+# print(spotify.get_user_devices())
+# # spotify.load_cadence_data([])
+# # spotify.get_top_songs_data()
+# # spotify.add_to_song_list()
+# # spotify.add_songs_to_queue()
+# # spotify.create_playlist()
