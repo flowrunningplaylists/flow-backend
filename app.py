@@ -68,8 +68,6 @@ def getPlaylist():
     json = jsonify(spotify.get_playing_and_queue())
     return json
 
-    
-
 @app.route('/api/greeting', methods=['POST'])
 def getData():
     data = request.get_json()
