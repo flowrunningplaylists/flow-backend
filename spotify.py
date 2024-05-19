@@ -40,7 +40,7 @@ class SpotifyAPI:
     #     self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
 
 
-    def load_cadence_data(self, cadence_data):
+    def load_cadence_data(self, cadence_data=[]):
         # testing
         # Read JSON file and assign to variable
         with open('combined.txt', 'r') as file:
@@ -269,14 +269,14 @@ class SpotifyAPI:
                     self.sp.next_track()
             
     
-# CLIENT_ID="04b4169e7d6b48df9d7d68fafbe54b1d"
-# CLIENT_SECRET="93180012ca944d9da595cd952ff67bb6"
-# REDIRECT_URI="http://localhost:3000/callback"
-# spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+CLIENT_ID="04b4169e7d6b48df9d7d68fafbe54b1d"
+CLIENT_SECRET="93180012ca944d9da595cd952ff67bb6"
+REDIRECT_URI="http://localhost:3000/callback"
+spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 # spotify.auth()
 # print(spotify.get_user_devices())
-# spotify.load_cadence_data([])
-# spotify.get_top_songs_data()
-# spotify.add_to_song_list()
-# spotify.add_songs_to_queue()
-# spotify.create_playlist()
+spotify.load_cadence_data([])
+spotify.get_top_songs_data()
+spotify.add_to_song_list()
+spotify.add_songs_to_queue()
+spotify.create_playlist()
