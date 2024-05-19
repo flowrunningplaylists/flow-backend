@@ -99,6 +99,11 @@ def getPlaylist():
     json = jsonify(spotify.get_playing_and_queue())
     return json
 
+@app.route('/plot', methods=['GET'])
+def getPlot():
+    # gets the plot for a playlist ig
+    pass
+
 @app.route('/api/greeting', methods=['POST'])
 def getData():
     data = request.get_json()
