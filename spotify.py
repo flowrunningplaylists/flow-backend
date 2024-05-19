@@ -24,6 +24,9 @@ class SpotifyAPI:
         self.sp = None
         self.sample_cadence_data = None
         self.song_data = {}
+        self.seed_tracks = []
+        self.seed_genre = []
+        self.seed_artist = []
 
     def readDataAndAuthenticate(self):
         # Read JSON file and assign to variable
@@ -32,6 +35,10 @@ class SpotifyAPI:
 
         #authenticate
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
+
+        #populate seed_genre and seed_artist
+        self.seed_artist.append(self.sp.current_user_top_artists(limit=1, offset=0, time_range='medium_term')['items'][0]['id'])
+        self.seed_genre.append(self.sp.current_user_top_artists(limit=1, offset=0, time_range='medium_term')['items'][0]['genres'][0])
 
     def get_cadence_avg(self, start_time, duration):
         start_index = int(start_time/self.CADENCE_INTERVAL_SEC)
@@ -55,8 +62,12 @@ class SpotifyAPI:
             uri = item['uri']
 
             self.song_data[id] = {"name" : name, "duration" : duration, "uri" : uri}
-        
+            if idx < 3:
+                self.seed_tracks.append(str(id))
+
             print(idx+1, name, duration, id, uri) 
+
+        # print("seed_tracks: " + self.seed_tracks)
 
         # bpm_arr = []
         # running_bpm_arr = []
@@ -78,6 +89,40 @@ class SpotifyAPI:
         return self.song_data
     
     #todo add_songs()
+    def add_recommended_songs(self):
+        new_songs = {}
+
+        results = self.sp.recommendations(seed_artists=self.seed_artist, seed_genres=self.seed_genre, seed_tracks=self.seed_tracks)
+
+        for idx, item in enumerate(results['tracks']):
+            id = item['id']
+            name = item['name']
+            duration = round(item['duration_ms']/1000, 2)
+            uri = item['uri']
+
+            new_songs[id] = {"name" : name, "duration" : duration, "uri" : uri}
+            
+            print("ADDED", idx+1, name, duration, id, uri) 
+
+        for id in new_songs:
+            result = self.sp.audio_analysis(track_id=id)
+            bpm = result['track']['tempo']
+            new_songs[id]['bpm'] = bpm
+            print(bpm)
+            
+            # double it if it is too low
+            running_bpm = bpm
+            if bpm < 110:
+                running_bpm *= 2
+            
+            # running_bpm_arr.append(running_bpm)
+            # bpm_arr.append(bpm)
+            new_songs[id]['running_bpm'] = running_bpm
+        
+        self.song_data.update(new_songs)
+        
+        return self.song_data
+
 
     def add_to_queue(self):
         time_elapsed_sec = 0 # total duration of songs played
@@ -96,7 +141,7 @@ class SpotifyAPI:
             if error > self.ERROR_THRESHOLD:
                 print('below error threshold')
 
-                #todo add songs to song bucket
+                self.add_recommended_songs()
 
             else:
                 # add a song to queue

@@ -80,7 +80,7 @@ class StravaAPI:
 
         # step 7: make API calls to get activity streams
         data_only = []
-        max_requests = 10 # to prevent ourselves from going over Strava's imposed limit
+        max_requests = 3 # to prevent ourselves from going over Strava's imposed limit
         n = 0
         runs_where_cadence_recorded = 0
         for activityId in activityIds:
