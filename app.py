@@ -90,17 +90,17 @@ def getRecent():
 def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
-    return 200
+    return "200"
 
 @app.route('/addtoqueue', methods=['GET'])
 def add_to_queue():
     spotify.add_songs_to_queue()
-    return 200
+    return "200"
 
 @app.route('/createplaylist', methods=['GET'])
 def create_playlist():
     spotify.create_playlist()    
-    return 200
+    return "200"
 
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():

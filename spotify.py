@@ -171,10 +171,10 @@ class SpotifyAPI:
             song_attributes = closest_entry[1]
             error = abs(song_attributes['running_bpm'] - target_spm)
 
-            print("\nError:", error, "\n")
+            print("\nErr:", error, "\n")
 
             if error > self.ERROR_THRESHOLD:
-                print('above error threshold')
+                print('above err threshold')
 
                 self.add_recommended_songs()
 
