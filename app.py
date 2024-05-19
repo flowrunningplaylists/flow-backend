@@ -105,6 +105,7 @@ def create_playlist():
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
     # activity = request.args.get('activity')
+    print(spotify.get_generated_song_list())
     json = jsonify(spotify.get_generated_song_list())
     return json
 
