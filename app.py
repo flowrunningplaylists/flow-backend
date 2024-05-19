@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 from combiner import Combiner
 from cadence import StravaAPI
 from dotenv import load_dotenv
@@ -15,6 +15,46 @@ REDIRECT_URI = os.getenv('REDIRECT_URI')
 # cadence_data = strava.getCadenceData()
 
 app = Flask(__name__)
+
+REDIRECT_URI_temp = 'https://hawkhacks2024.onrender.com/callback'
+
+@app.route('/login')
+def login():
+    auth_url = (
+        f'https://www.strava.com/oauth/authorize'
+        f'?client_id={CLIENT_ID}'
+        f'&redirect_uri={REDIRECT_URI_temp}'
+        f'&response_type=code'
+        f'&scope=activity:read_all'
+    )
+    return redirect(auth_url)
+
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    if code:
+        return exchange_code_for_token(code)
+    else:
+        return 'Error: No code provided.'
+
+def exchange_code_for_token(code):
+    token_url = 'https://www.strava.com/oauth/token'
+    response = request.post(token_url, data={
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'code': code,
+        'grant_type': 'authorization_code'
+    })
+    if response.status_code == 200:
+        tokens = response.json()
+
+        print (tokens)
+        # Save tokens for future use, e.g., in a database or session
+        return f"Access token: {tokens['access_token']}"
+    else:
+        return 'Error exchanging code for token'
+
+
 
 @app.route('/api/demo', methods=['GET'])
 def demo():
