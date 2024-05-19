@@ -9,7 +9,8 @@ py==1.11.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 randomize==0.14
+redis==5.0.4
 requests==2.31.0
 six==1.16.0
-urllib3==2.2.1
 spotipy==2.23.0
+urllib3==2.2.1
