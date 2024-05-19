@@ -16,10 +16,10 @@ class SpotifyAPI:
         self.SCOPE = "user-library-read, user-modify-playback-state, user-read-playback-state, user-top-read, user-read-email, user-read-private, playlist-modify-public, playlist-modify-private"
         self.BPM_UNCERTAINTY = 3
         self.CADENCE_INTERVAL_SEC = 3.43
-        self.ERROR_THRESHOLD = 50
+        self.ERROR_THRESHOLD = 10
         self.BPM_THRESHOLD = 110
         self.LOUDNESS_DROP_THRESHOLD = -4
-        self.NUM_TOP_SONGS = 3
+        self.NUM_TOP_SONGS = 10
         self.SONG_LIST_LEN = 3
 
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
@@ -42,11 +42,11 @@ class SpotifyAPI:
 
 
     def load_cadence_data(self, cadence_data):
-        # # testing
-        # # Read JSON file and assign to variable
-        # with open('combined.txt', 'r') as file:
-        #     self.sample_cadence_data = json.load(file)
-        self.sample_cadence_data = cadence_data
+        # testing
+        # Read JSON file and assign to variable
+        with open('combined.txt', 'r') as file:
+            self.sample_cadence_data = json.load(file)
+        # self.sample_cadence_data = cadence_data
 
         #authenticate
         # self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
@@ -266,12 +266,12 @@ class SpotifyAPI:
                     self.sp.next_track()
             
     
-# CLIENT_ID="5c17cfd2c3884a6aa0b8d92d21ccf51e"
-# CLIENT_SECRET="ce4bd0c559f149aeb281ecfd8d84da9b"
+# CLIENT_ID="04b4169e7d6b48df9d7d68fafbe54b1d"
+# CLIENT_SECRET="93180012ca944d9da595cd952ff67bb6"
 # REDIRECT_URI="http://localhost:3000/callback"
 # spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 # spotify.auth()
-# # print(spotify.get_user_devices())
+# print(spotify.get_user_devices())
 # spotify.load_cadence_data([])
 # spotify.get_top_songs_data()
 # spotify.add_to_song_list()
