@@ -32,10 +32,11 @@ def login():
 @app.route('/callback')
 def callback():
     code = request.args.get('code')
-    if code:
-        return exchange_code_for_token(code)
-    else:
-        return 'Error: No code provided.'
+    return jsonify(code)
+    # if code:
+    #     return exchange_code_for_token(code)
+    # else:
+    #     return 'Error: No code provided.'
 
 def exchange_code_for_token(code):
     token_url = 'https://www.strava.com/oauth/token'
