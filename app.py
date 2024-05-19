@@ -90,15 +90,18 @@ def getRecent():
 def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
-    spotify.add_songs_to_queue()
-    spotify.create_playlist()
 
-    return jsonify('started')
+@app.route('/addtoqueue', methods=['GET'])
+def add_to_queue():
+    spotify.add_songs_to_queue()
+
+@app.route('/createplaylist', methods=['GET'])
+def create_playlist():
+    spotify.create_playlist()    
 
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
-    activity = request.args.get('activity')
-    # call like get playlist or somthing bs
+    # activity = request.args.get('activity')
     json = jsonify(spotify.get_generated_song_list())
     return json
 
