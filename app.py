@@ -26,7 +26,7 @@ def getRecent():
     json = jsonify(strava.getRecentActivities())
     return json
 
-@app.route('/playlist?activity=<name>', methods=['GET'])
+@app.route('/playlist', methods=['GET'])
 def getPlaylist():
     activity = request.args.get('activity')
     # call like get playlist or somthing bs
@@ -41,5 +41,5 @@ def getData():
     return f"Hello, {name}!"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True) 
     
