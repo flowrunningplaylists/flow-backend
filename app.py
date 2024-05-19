@@ -65,12 +65,13 @@ def getRecent():
     # Call something like stava.getRecent() and return a json
     # json = jsonify(strava.getRecentActivities())
     # return json
+    return jsonify("Troll")
 
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
     activity = request.args.get('activity')
     # call like get playlist or somthing bs
-
+    return jsonify("Troll")
 
     
 
