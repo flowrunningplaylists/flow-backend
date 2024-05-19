@@ -27,6 +27,7 @@ class SpotifyAPI:
         self.seed_tracks = []
         self.seed_genre = []
         self.seed_artist = []
+        self.songs_added_to_queue_ids = []
 
     def readDataAndAuthenticate(self):
         # Read JSON file and assign to variable
@@ -127,7 +128,7 @@ class SpotifyAPI:
     def add_to_queue(self):
         time_elapsed_sec = 0 # total duration of songs played
 
-        while(True): # todo fix
+        for i in range(5): # todo fix
             target_spm = round(self.get_cadence_avg(time_elapsed_sec, 200) * 2, 2)
             print("Target spm:", target_spm)
 
@@ -147,13 +148,14 @@ class SpotifyAPI:
                 # add a song to queue
                 self.sp.add_to_queue(uri=closest_entry[1]['uri']) # todo set default device when no active device is detected
                 print(f"Added {closest_entry[1]['name']} to queue")
+                self.songs_added_to_queue_ids.append(closest_entry[0])
 
                 del self.song_data[closest_entry[0]]
 
                 time_elapsed_sec += closest_entry[1]['duration']
                 print("Current length of queue (sec):", round(time_elapsed_sec, 2))
 
-            sleep(10) # todo fix 
+            sleep(5) # todo fix 
 
 # result = sp.audio_analysis("4pi0Elz7B7cLfw37J3bYm9")
     # given sections array of a song, returns sections where there is a suddenly decrease in loudness
@@ -205,14 +207,13 @@ class SpotifyAPI:
                     self.sp.next_track()
             
     # creates playlist with items added to queue and all songs played so far
-    def create_playlist(self):
+    def create_playlist(self, playlist_name='My awesome running playlist'):
+        print("Creating playlist")
         user_id = self.sp.current_user()['id']
-        result = self.sp.user_playlist_create(user=user_id, name='My awesome running playlist', public=False)
+        result = self.sp.user_playlist_create(user=user_id, name=playlist_name, public=False)
         playlist_id = result['id']
-        tracks_to_add = self.get_playing_and_queue()['queue']
-        print(tracks_to_add) # todo fix
-        if tracks_to_add:
-            self.sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=tracks_to_add)
+        if self.songs_added_to_queue_ids:
+            self.sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=self.songs_added_to_queue_ids)
 
         
 
@@ -221,8 +222,8 @@ class SpotifyAPI:
     def get_playing_and_queue(self):
         return self.sp.queue()
     
-spotify = SpotifyAPI()
-spotify.readDataAndAuthenticate()
-# spotify.monitor_playback()
-print(spotify.get_playing_and_queue())
+# spotify = SpotifyAPI()
+# spotify.readDataAndAuthenticate()
+# spotify.get_top_songs_data()
+# spotify.add_to_queue()
 # spotify.create_playlist()
