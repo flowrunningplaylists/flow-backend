@@ -23,23 +23,23 @@ class StravaAPI:
         self.access_token = None
         self.activities = None
     
-    def autheticateAndGetAllActivities(self):
-        # Step 2: Obtain the authorization code
-        params = {
-            'client_id': self.CLIENT_ID,
-            'redirect_uri': self.REDIRECT_URI,
-            'response_type': 'code',
-            'scope': 'activity:read_all'
-        }
-        auth_request = requests.Request('GET', self.AUTH_URL, params=params).prepare()
-        auth_url = auth_request.url
-        print(f'Opening the following URL in your browser: {auth_url}')
-        webbrowser.open(auth_url)
+    def autheticateAndGetAllActivities(self, auth_code):
+        # # Step 2: Obtain the authorization code
+        # params = {
+        #     'client_id': self.CLIENT_ID,
+        #     'redirect_uri': self.REDIRECT_URI,
+        #     'response_type': 'code',
+        #     'scope': 'activity:read_all'
+        # }
+        # auth_request = requests.Request('GET', self.AUTH_URL, params=params).prepare()
+        # auth_url = auth_request.url
+        # print(f'Opening the following URL in your browser: {auth_url}')
+        # webbrowser.open(auth_url)
 
-        # Step 3: User authorizes and we get the authorization code from the redirect URL
-        print('Please authorize the app and paste the full redirect URL here:')
-        redirect_response = input('> ')
-        auth_code = redirect_response.split('code=')[1].split('&')[0]
+        # # Step 3: User authorizes and we get the authorization code from the redirect URL
+        # print('Please authorize the app and paste the full redirect URL here:')
+        # redirect_response = input('> ')
+        # auth_code = redirect_response.split('code=')[1].split('&')[0]
 
         # Step 4: Exchange authorization code for access token
         token_params = {

@@ -10,7 +10,7 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
-# strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
@@ -32,28 +32,29 @@ def login():
 @app.route('/callback')
 def callback():
     code = request.args.get('code')
+    strava.autheticateAndGetAllActivities(code)
     return jsonify(code)
     # if code:
     #     return exchange_code_for_token(code)
     # else:
     #     return 'Error: No code provided.'
 
-def exchange_code_for_token(code):
-    token_url = 'https://www.strava.com/oauth/token'
-    response = request.post(token_url, data={
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-        'code': code,
-        'grant_type': 'authorization_code'
-    })
-    if response.status_code == 200:
-        tokens = response.json()
+# def exchange_code_for_token(code):
+#     token_url = 'https://www.strava.com/oauth/token'
+#     response = request.post(token_url, data={
+#         'client_id': CLIENT_ID,
+#         'client_secret': CLIENT_SECRET,
+#         'code': code,
+#         'grant_type': 'authorization_code'
+#     })
+#     if response.status_code == 200:
+#         tokens = response.json()
 
-        print (tokens)
-        # Save tokens for future use, e.g., in a database or session
-        return f"Access token: {tokens['access_token']}"
-    else:
-        return 'Error exchanging code for token'
+#         print (tokens)
+#         # Save tokens for future use, e.g., in a database or session
+#         return f"Access token: {tokens['access_token']}"
+#     else:
+#         return 'Error exchanging code for token'
 
 
 
@@ -64,9 +65,9 @@ def demo():
 @app.route('/recent', methods=['GET'])
 def getRecent():
     # Call something like stava.getRecent() and return a json
-    # json = jsonify(strava.getRecentActivities())
-    # return json
-    return jsonify("Troll")
+    json = jsonify(strava.getRecentActivities())
+    return json
+    # return jsonify("Troll")
 
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
