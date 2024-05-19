@@ -13,6 +13,8 @@ CLIENT_ID_SPOTIFY = os.getenv('CLIENT_ID_SPOTIFY')
 CLIENT_SECRET_SPOTIFY=os.getenv('CLIENT_SECRET_SPOTIFY')
 REDIRECT_URI_SPOTIFY=os.getenv('REDIRECT_URI_SPOTIFY')
 
+app = Flask(__name__)
+
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 spotify = SpotifyAPI(CLIENT_ID_SPOTIFY, CLIENT_SECRET_SPOTIFY, REDIRECT_URI_SPOTIFY)
 print(spotify.sp == None)
@@ -20,7 +22,7 @@ print(spotify.sp == None)
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
-app = Flask(__name__)
+
 
 REDIRECT_URI_temp = 'https://hawkhacks2024.onrender.com/callback'
 
@@ -90,6 +92,7 @@ def getRecent():
 def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
+    print('0',spotify.generated_song_list)
     return "200"
 
 @app.route('/addtoqueue', methods=['GET'])
