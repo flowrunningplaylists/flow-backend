@@ -110,7 +110,7 @@ class StravaAPI:
 
     def getRecentActivities(self):
         last_week_activities = []
-        print(len(self.activities))
+        # print(len(self.activities))
         for activity in self.activities:
             date = datetime.strptime(activity['start_date'], "%Y-%m-%dT%H:%M:%SZ").date()
             # print(datetime.now().date())

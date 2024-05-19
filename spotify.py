@@ -3,7 +3,6 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth  
 import json
 
-sample_cadence_data = []
 
 class SpotifyAPI:
     def __init__(self, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI):
@@ -23,7 +22,7 @@ class SpotifyAPI:
         self.SONG_LIST_LEN = 3
 
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
-        self.sample_cadence_data = None
+        self.cadence_data = None
         self.song_data = {}
         self.device_id = None
         self.device_is_active = False
@@ -45,8 +44,9 @@ class SpotifyAPI:
         # testing
         # Read JSON file and assign to variable
         with open('combined.txt', 'r') as file:
-            self.sample_cadence_data = json.load(file)
-        # self.sample_cadence_data = cadence_data
+            self.cadence_data = json.load(file)
+        # self.cadence_data = cadence_data
+        print(self.cadence_data)
 
         #authenticate
         # self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
@@ -60,7 +60,7 @@ class SpotifyAPI:
         end_index = int (start_time + int(duration/self.CADENCE_INTERVAL_SEC))
         print("start index", start_index, "end_index", end_index)
 
-        total = sum(self.sample_cadence_data[i] for i in range(start_index, end_index))
+        total = sum(self.cadence_data[i] for i in range(start_index, end_index))
         count = end_index - start_index
 
         average = total / count

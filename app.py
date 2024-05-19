@@ -59,14 +59,14 @@ def callback():
     #strava auth
     strava.autheticateAndGetAllActivities(code)
     data = strava.getCadenceData(ActivityType.RUN)
-
+    print(data)
     #combiner
     cb = Combiner(arrs=data)
     combined_list = cb.combine()
-
+    print(combined_list)
     # spotify
     spotify.load_cadence_data(combined_list)
-
+    print(spotify.cadence_data)
     return jsonify(code)
 
 #will never be called
