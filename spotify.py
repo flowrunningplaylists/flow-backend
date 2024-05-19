@@ -57,7 +57,7 @@ class SpotifyAPI:
 
     def get_cadence_avg(self, start_time, duration):
         start_index = int(start_time/self.CADENCE_INTERVAL_SEC)
-        end_index = int (start_time + int(duration/self.CADENCE_INTERVAL_SEC))
+        end_index = int (start_index + int(duration/self.CADENCE_INTERVAL_SEC))
         print("start index", start_index, "end_index", end_index)
         print("in get_cadence_avg, print self.cadence_data", print(self.cadence_data))
         print(len(self.cadence_data))
