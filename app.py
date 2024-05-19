@@ -64,7 +64,7 @@ def callback():
     combined_list = cb.combine()
 
     # spotify
-    spotify.readDataAndAuthenticate(combined_list)
+    spotify.load_cadence_data(combined_list)
 
     return jsonify(code)
 
@@ -88,7 +88,9 @@ def getRecent():
 @app.route('/start', methods=['GET'])
 def start():
     spotify.get_top_songs_data()
+    spotify.add_to_song_list()
     spotify.add_to_queue()
+    spotify.create_playlist()
 
     return jsonify('started')
 
@@ -96,7 +98,7 @@ def start():
 def getPlaylist():
     activity = request.args.get('activity')
     # call like get playlist or somthing bs
-    json = jsonify(spotify.get_playing_and_queue())
+    json = jsonify(spotify.get_generated_song_list())
     return json
 
 @app.route('/plot', methods=['GET'])
