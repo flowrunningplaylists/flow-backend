@@ -95,8 +95,8 @@ def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
     print('0',spotify.generated_song_list)
-    haha = jsonify(spotify.generated_song_list)
-    return "200"
+    return jsonify(spotify.generated_song_list)
+    # return "200"
 
 @app.route('/addtoqueue', methods=['GET'])
 def add_to_queue():
