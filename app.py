@@ -11,6 +11,7 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+spotify = SpotifyAPI()
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
@@ -42,7 +43,6 @@ def callback():
     combined_list = cb.combine()
 
     # spotify
-    spotify = SpotifyAPI()
     spotify.readDataAndAuthenticate(combined_list)
 
     return jsonify(code)
