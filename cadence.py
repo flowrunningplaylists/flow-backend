@@ -63,11 +63,12 @@ class StravaAPI:
         }
         activities_response = requests.get(activities_url, headers=headers, params=params)
         activities = activities_response.json()
-        # pprint(activities)
+        print(activities)
         if 'errors' in activities:
-            pprint("Rate Limit has probably been exceeded. Exiting now.")
+            print("Rate Limit has probably been exceeded. Exiting now.")
             return False
         self.activities = activities
+
         return True 
 
     def getCadenceData(self, activity_type):
