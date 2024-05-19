@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, redirect
 from combiner import Combiner
-from cadence import StravaAPI
+from cadence import *
 from dotenv import load_dotenv
 from spotify import *
 import os
@@ -11,6 +11,8 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+spotify = SpotifyAPI()
+spotify.readDataAndAuthenticate()
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
@@ -32,7 +34,19 @@ def login():
 @app.route('/callback')
 def callback():
     code = request.args.get('code')
+
+    #strava auth
     strava.autheticateAndGetAllActivities(code)
+    data = strava.getCadenceData(ActivityType.RUN)
+
+    #combiner
+    cb = Combiner(arrs=data)
+    combined_list = cb.combine()
+
+    # spotify
+    spotify = SpotifyAPI()
+    spotify.readDataAndAuthenticate(combined_list)
+
     return jsonify(code)
 
 
@@ -51,7 +65,8 @@ def getRecent():
 def getPlaylist():
     activity = request.args.get('activity')
     # call like get playlist or somthing bs
-    return jsonify("Troll")
+    json = jsonify(spotify.get_playing_and_queue())
+    return json
 
     
 

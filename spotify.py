@@ -29,10 +29,11 @@ class SpotifyAPI:
         self.seed_artist = []
         self.songs_added_to_queue_ids = []
 
-    def readDataAndAuthenticate(self):
+    def readDataAndAuthenticate(self, combined_list):
         # Read JSON file and assign to variable
-        with open('combined.txt', 'r') as file:
-            self.sample_cadence_data = json.load(file)
+        # with open('combined.txt', 'r') as file:
+        #     self.sample_cadence_data = json.load(file)
+        self.sample_cadence_data = combined_list
 
         #authenticate
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
