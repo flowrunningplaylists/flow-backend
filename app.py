@@ -85,6 +85,13 @@ def getRecent():
     return json
     # return jsonify("Troll")
 
+@app.route('/start', methods=['GET'])
+def start():
+    spotify.get_top_songs_data()
+    spotify.add_to_queue()
+
+    return jsonify('started')
+
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
     activity = request.args.get('activity')
