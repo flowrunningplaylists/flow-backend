@@ -15,6 +15,7 @@ REDIRECT_URI_SPOTIFY=os.getenv('REDIRECT_URI_SPOTIFY')
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 spotify = SpotifyAPI(CLIENT_ID_SPOTIFY, CLIENT_SECRET_SPOTIFY, REDIRECT_URI_SPOTIFY)
+print(spotify.sp == None)
 # print(spotify.CLIENT_ID_SPOTIFY, CLIENT_SECRET_SPOTIFY, REDIRECT_URI_SPOTIFY)
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
@@ -36,19 +37,19 @@ def login():
     return redirect(auth_url)
 
 #step 1
-@app.route('/loginspotify')
-def loginspotify():
-    spotify.auth()
-    # sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID_SPOTIFY, client_secret=CLIENT_SECRET_SPOTIFY, redirect_uri=REDIRECT_URI_SPOTIFY, scope=spotify.SCOPE))
-    # spotify.sp = sp
-    # auth_url = (
-    #     f'https://www.strava.com/oauth/authorize'
-    #     f'?client_id={CLIENT_ID}'
-    #     f'&redirect_uri={REDIRECT_URI_temp}'
-    #     f'&response_type=code'
-    #     f'&scope=activity:read_all'
-    # )
-    return jsonify('authspotify')
+# @app.route('/loginspotify')
+# def loginspotify():
+#     spotify.auth()
+#     # sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID_SPOTIFY, client_secret=CLIENT_SECRET_SPOTIFY, redirect_uri=REDIRECT_URI_SPOTIFY, scope=spotify.SCOPE))
+#     # spotify.sp = sp
+#     # auth_url = (
+#     #     f'https://www.strava.com/oauth/authorize'
+#     #     f'?client_id={CLIENT_ID}'
+#     #     f'&redirect_uri={REDIRECT_URI_temp}'
+#     #     f'&response_type=code'
+#     #     f'&scope=activity:read_all'
+#     # )
+#     return jsonify('authspotify')
 
 #follows from step 2
 @app.route('/callback')

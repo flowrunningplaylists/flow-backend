@@ -16,13 +16,13 @@ class SpotifyAPI:
         self.SCOPE = "user-library-read, user-modify-playback-state, user-read-playback-state, user-top-read, user-read-email, user-read-private, playlist-modify-public, playlist-modify-private"
         self.BPM_UNCERTAINTY = 3
         self.CADENCE_INTERVAL_SEC = 3.43
-        self.ERROR_THRESHOLD = 5
+        self.ERROR_THRESHOLD = 50
         self.BPM_THRESHOLD = 110
         self.LOUDNESS_DROP_THRESHOLD = -4
-        self.NUM_TOP_SONGS = 20
-        self.SONG_LIST_LEN = 5
+        self.NUM_TOP_SONGS = 3
+        self.SONG_LIST_LEN = 3
 
-        self.sp = None
+        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
         self.sample_cadence_data = None
         self.song_data = {}
         self.device_id = None
@@ -37,8 +37,8 @@ class SpotifyAPI:
 
         # self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
 
-    def auth(self):
-        self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
+    # def auth(self):
+    #     self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope=self.SCOPE))
 
 
     def load_cadence_data(self, cadence_data):
