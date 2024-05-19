@@ -11,8 +11,6 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
 strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-spotify = SpotifyAPI()
-spotify.readDataAndAuthenticate()
 # strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
