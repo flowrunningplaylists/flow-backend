@@ -42,7 +42,7 @@ class SpotifyAPI:
 
 
     def load_cadence_data(self, cadence_data):
-        # # testig
+        # # testing
         # # Read JSON file and assign to variable
         # with open('combined.txt', 'r') as file:
         #     self.sample_cadence_data = json.load(file)
@@ -271,9 +271,9 @@ class SpotifyAPI:
 # REDIRECT_URI="http://localhost:3000/callback"
 # spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 # spotify.auth()
-# print(spotify.get_user_devices())
-# # spotify.load_cadence_data([])
-# # spotify.get_top_songs_data()
-# # spotify.add_to_song_list()
-# # spotify.add_songs_to_queue()
-# # spotify.create_playlist()
+# # print(spotify.get_user_devices())
+# spotify.load_cadence_data([])
+# spotify.get_top_songs_data()
+# spotify.add_to_song_list()
+# spotify.add_songs_to_queue()
+# spotify.create_playlist()
