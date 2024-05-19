@@ -155,6 +155,8 @@ class SpotifyAPI:
 
     def add_to_song_list(self):
         time_elapsed_sec = 0 # total duration of songs played
+        self.load_cadence_data()
+        print("add_to_spmg, cadence data", self.cadence_data)
 
         while(len(self.generated_song_list) <= self.SONG_LIST_LEN): 
             target_spm = round(self.get_cadence_avg(time_elapsed_sec, 200) * 2, 2)
