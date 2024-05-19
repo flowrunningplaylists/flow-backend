@@ -59,7 +59,7 @@ class SpotifyAPI:
         start_index = int(start_time/self.CADENCE_INTERVAL_SEC)
         end_index = int (start_time + int(duration/self.CADENCE_INTERVAL_SEC))
         print("start index", start_index, "end_index", end_index)
-        print("in get_cadence_avg, print self.cadence_data". print(self.cadence_data))
+        print("in get_cadence_avg, print self.cadence_data", print(self.cadence_data))
         print(len(self.cadence_data))
         total = sum(self.cadence_data[i] for i in range(start_index, end_index))
         count = end_index - start_index

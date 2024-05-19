@@ -63,10 +63,10 @@ def callback():
     #combiner
     cb = Combiner(arrs=data)
     combined_list = cb.combine()
-    print(combined_list)
+    print("from strava combined", combined_list)
     # spotify
     spotify.load_cadence_data(combined_list)
-    print(spotify.cadence_data)
+    print("from txt", spotify.cadence_data)
     return jsonify(code)
 
 #will never be called
