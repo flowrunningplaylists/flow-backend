@@ -10,8 +10,8 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 REDIRECT_URI = os.getenv('REDIRECT_URI')
 
-strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-strava.autheticateAndGetAllActivities()
+# strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+# strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
 app = Flask(__name__)
@@ -23,8 +23,8 @@ def demo():
 @app.route('/recent', methods=['GET'])
 def getRecent():
     # Call something like stava.getRecent() and return a json
-    json = jsonify(strava.getRecentActivities())
-    return json
+    # json = jsonify(strava.getRecentActivities())
+    # return json
 
 @app.route('/playlist', methods=['GET'])
 def getPlaylist():
