@@ -6,8 +6,8 @@ class Combiner:
         self.arrs = arrs
     
     def combine(self) -> list[float]:
-        sorted_arrs = sorted(sorted_arrs, key=len, reverse=True)
-        new_list = [ [] for _ in range(len(sorted_arrs)) ]
+        sorted_arrs = sorted(self.arrs, key=len, reverse=True)
+        new_list = [ [] for _ in range(len(sorted_arrs[0])) ]
         for arr in sorted_arrs:
             for i in range(len(arr)):
                 new_list[i].append(arr[i])
