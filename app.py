@@ -90,7 +90,7 @@ def getRecent():
 def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
-    spotify.add_to_queue()
+    spotify.add_songs_to_queue()
     spotify.create_playlist()
 
     return jsonify('started')
