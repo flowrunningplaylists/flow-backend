@@ -1,6 +1,6 @@
 from time import sleep
-import spotipy  
-from spotipy.oauth2 import SpotifyOAuth  
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 import json
 
 
@@ -66,7 +66,7 @@ class SpotifyAPI:
 
         average = total / count
         return average
-    
+
     def get_user_devices(self):
         return self.sp.devices()
 
@@ -82,11 +82,11 @@ class SpotifyAPI:
             image = [image['url'] for image in item['album']['images']]
 
             self.song_data[id] = {"name" : name, "duration" : duration, "uri" : uri, 'image' : image, "artist" : artist}
-    
+
             if idx < 3:
                 self.seed_tracks.append(str(id))
 
-            print(idx+1, name, duration, id, uri) 
+            print(idx+1, name, duration, id, uri)
 
         # print("seed_tracks: " + self.seed_tracks)
 
@@ -99,18 +99,18 @@ class SpotifyAPI:
             bpm = result['track']['tempo']
             self.song_data[id]['bpm'] = bpm
             print(bpm)
-            
+
             # double it if it is too low
             running_bpm = bpm
             if bpm < self.BPM_THRESHOLD:
                 running_bpm *= 2
-            
+
             # running_bpm_arr.append(running_bpm)
             # bpm_arr.append(bpm)
             self.song_data[id]['running_bpm'] = running_bpm
-        
+
         return self.song_data
-    
+
     def add_recommended_songs(self):
         new_songs = {}
 
@@ -125,8 +125,8 @@ class SpotifyAPI:
             image = [image['url'] for image in item['album']['images']]
 
             new_songs[id] = {"name" : name, "duration" : duration, "uri" : uri, 'image' : image, "artist" : artist}
-            
-            print("ADDED", idx+1, name, duration, id, uri) 
+
+            print("ADDED", idx+1, name, duration, id, uri)
 
         for id in new_songs:
             try:
@@ -137,19 +137,19 @@ class SpotifyAPI:
             bpm = result['track']['tempo']
             new_songs[id]['bpm'] = bpm
             print(bpm)
-            
+
             # double it if it is too low
             running_bpm = bpm
             if bpm < self.BPM_THRESHOLD:
                 running_bpm *= 2
-            
+
             # running_bpm_arr.append(running_bpm)
             # bpm_arr.append(bpm)
             new_songs[id]['running_bpm'] = running_bpm
             # sleep(10)
-        
+
         self.song_data.update(new_songs)
-        
+
         return self.song_data
 
 
@@ -158,7 +158,7 @@ class SpotifyAPI:
         self.load_cadence_data()
         print("add_to_spmg, cadence data", self.cadence_data)
 
-        while(len(self.generated_song_list) <= self.SONG_LIST_LEN): 
+        while(len(self.generated_song_list) <= self.SONG_LIST_LEN):
             target_spm = round(self.get_cadence_avg(time_elapsed_sec, 200) * 2, 2)
             print("Target spm:", target_spm)
 
@@ -166,7 +166,7 @@ class SpotifyAPI:
 
             closest_entry = min(self.song_data.items(), key=lambda item: abs(item[1]['running_bpm'] - target_spm))
             print(closest_entry)
-            
+
             song_id = closest_entry[0]
             song_attributes = closest_entry[1]
             error = abs(song_attributes['running_bpm'] - target_spm)
@@ -197,7 +197,7 @@ class SpotifyAPI:
                 time_elapsed_sec += song_attributes['duration']
                 print("Current length of queue (sec):", round(time_elapsed_sec, 2))
 
-            # sleep(10) 
+            # sleep(10)
 
 
     def add_songs_to_queue(self):
@@ -221,7 +221,7 @@ class SpotifyAPI:
     def get_loudness_drop_sections(self, sections):
         if len(sections) < 1:
             return None
-        
+
         print(type(sections))
         prev = sections[0]['loudness']
         res = []
@@ -231,7 +231,7 @@ class SpotifyAPI:
                 print("Detected loudness drop")
                 res.append(section)
             prev = section['loudness']
-        
+
         return res
 
     def update_playback_state(self):
@@ -259,7 +259,7 @@ class SpotifyAPI:
                     self.update_playback_state()
                     target_time = target_sections[0]['start']
                     print("target skip time", target_time)
-                    sleep_time = target_time - self.playback_progress_sec 
+                    sleep_time = target_time - self.playback_progress_sec
                     print("sleeping", sleep_time)
 
                     sleep(sleep_time)
@@ -267,16 +267,16 @@ class SpotifyAPI:
 
                     # if abs(self.playback_progress_sec - target_time) < 0.5:
                     self.sp.next_track()
-            
-    
-CLIENT_ID="04b4169e7d6b48df9d7d68fafbe54b1d"
-CLIENT_SECRET="93180012ca944d9da595cd952ff67bb6"
-REDIRECT_URI="http://localhost:3000/callback"
-spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-# spotify.auth()
-# print(spotify.get_user_devices())
-spotify.load_cadence_data([])
-spotify.get_top_songs_data()
-spotify.add_to_song_list()
-spotify.add_songs_to_queue()
-spotify.create_playlist()
+
+
+# CLIENT_ID="04b4169e7d6b48df9d7d68fafbe54b1d"
+# CLIENT_SECRET="93180012ca944d9da595cd952ff67bb6"
+# REDIRECT_URI="http://localhost:3000/callback"
+# spotify = SpotifyAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+# # spotify.auth()
+# # print(spotify.get_user_devices())
+# # spotify.load_cadence_data([])
+# spotify.get_top_songs_data()
+# spotify.add_to_song_list()
+# spotify.add_songs_to_queue()
+# spotify.create_playlist()
