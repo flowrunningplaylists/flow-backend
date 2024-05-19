@@ -53,8 +53,6 @@ def getPlaylist():
     # call like get playlist or somthing bs
     return jsonify("Troll")
 
-    
-
 @app.route('/api/greeting', methods=['POST'])
 def getData():
     data = request.get_json()
