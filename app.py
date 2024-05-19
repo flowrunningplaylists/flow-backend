@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from spotify import *
 import os
 
+haha = None
+
 load_dotenv()
 CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
@@ -93,6 +95,7 @@ def start():
     spotify.get_top_songs_data()
     spotify.add_to_song_list()
     print('0',spotify.generated_song_list)
+    haha = jsonify(spotify.generated_song_list)
     return "200"
 
 @app.route('/addtoqueue', methods=['GET'])
@@ -111,7 +114,8 @@ def getPlaylist():
     print('1',spotify.get_generated_song_list())
     print('2',spotify.generated_song_list)
     json = jsonify(spotify.generated_song_list)
-    return json
+    print(haha)
+    return haha
 
 @app.route('/plot', methods=['GET'])
 def getPlot():
