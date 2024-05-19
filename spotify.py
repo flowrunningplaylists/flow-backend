@@ -174,7 +174,7 @@ class SpotifyAPI:
             print("\nError:", error, "\n")
 
             if error > self.ERROR_THRESHOLD:
-                print('below error threshold')
+                print('above error threshold')
 
                 self.add_recommended_songs()
 
