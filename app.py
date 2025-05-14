@@ -21,7 +21,7 @@ strava = StravaAPI(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 spotify = SpotifyAPI(CLIENT_ID_SPOTIFY, CLIENT_SECRET_SPOTIFY, REDIRECT_URI_SPOTIFY)
 print(spotify.sp == None)
 # print(spotify.CLIENT_ID_SPOTIFY, CLIENT_SECRET_SPOTIFY, REDIRECT_URI_SPOTIFY)
-# strava.autheticateAndGetAllActivities()
+strava.autheticateAndGetAllActivities()
 # cadence_data = strava.getCadenceData()
 
 
@@ -129,5 +129,5 @@ def getData():
     return f"Hello, {name}!"
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True) 
+    app.run(host="0.0.0.0", debug=True, port=5001) 
     
