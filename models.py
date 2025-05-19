@@ -24,14 +24,15 @@ class User(Base):
         return f"User(id={self.id!r}, email={self.email!r})"
 
 
+# TODO: determine which of these columns are required
 class Activity(Base):
     __tablename__ = "activity"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id", ondelete="CASCADE"))
     name: Mapped[Optional[str]] = mapped_column(Text)
-    distance: Mapped[Optional[float]] = mapped_column(Float)
-    moving_time: Mapped[Optional[float]] = mapped_column(Float)
+    distance: Mapped[Optional[float]] = mapped_column(Float, nullable=False)
+    moving_time: Mapped[Optional[float]] = mapped_column(Float, nullable=False)
     total_elevation_gain: Mapped[Optional[float]] = mapped_column(Float)
     speed_avg: Mapped[Optional[float]] = mapped_column(Float)
     speed_max: Mapped[Optional[float]] = mapped_column(Float)
