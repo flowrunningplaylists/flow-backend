@@ -11,6 +11,7 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
+# TODO: maybe change this to /login
 @app.get("/users/{email}", response_model=schemas.User)
 def get_user_by_email(email: str):
     with get_db() as db:
@@ -19,6 +20,7 @@ def get_user_by_email(email: str):
             raise HTTPException(status_code=404, detail="User not found")
         return db_user
 
+# TODO: maybe change this to /signup
 @app.post("/create-user")
 def create_user(user: schemas.UserCreate):
     with get_db() as db:
@@ -27,4 +29,5 @@ def create_user(user: schemas.UserCreate):
         except Exception as e:
             raise HTTPException(status_code=400, detail="User already exists")
         return db_user
-    
+
+# TODO: add endpoint to pull strava activities
