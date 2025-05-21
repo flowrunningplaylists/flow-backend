@@ -20,14 +20,24 @@ def get_users(db, skip: int = 0, limit: int = 10):
 
 def update_user(
         db, 
-        id: int, 
+        id: int = None, 
         email: str = None, 
         password_hash: str = None,
         name: str = None,
-        strava_auth_code: str = None,
         strava_access_token: str = None,
+        strava_refresh_token: str = None,
+        spotify_access_token: str = None,
+        spotify_refresh_token: str = None,
     ):
-    user = db.query(User).filter(User.id == id).first()
+    print(f"Updating user with id: {id}, email: {email}")  
+    if not (id or email):
+        raise Exception("Either id or email must be provided")
+    
+    user: User
+    if id:
+        user = db.query(User).filter(User.id == id).first()
+    elif email:
+        user = db.query(User).filter(User.email == email).first()
     if not user:
         raise Exception("User not found")
     if name:
@@ -36,10 +46,14 @@ def update_user(
         user.password_hash = password_hash
     if email:
         user.email = email
-    if strava_auth_code:
-        user.strava_auth_code = strava_auth_code
     if strava_access_token:
         user.strava_access_token = strava_access_token
+    if strava_refresh_token:
+        user.strava_refresh_token = strava_refresh_token
+    if spotify_access_token:
+        user.spotify_access_token = spotify_access_token
+    if spotify_refresh_token:
+        user.spotify_refresh_token = spotify_refresh_token
     db.commit()
     db.refresh(user)
     return user

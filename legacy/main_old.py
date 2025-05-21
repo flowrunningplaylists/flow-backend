@@ -7,8 +7,8 @@ import webbrowser
 import os
 
 load_dotenv()
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+CLIENT_ID = os.getenv('CLIENT_ID_STRAVA')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET_STRAVA')
 REDIRECT_URI = 'http://localhost:3000'
 CLIENT_ID_SPOTIFY='5c17cfd2c3884a6aa0b8d92d21ccf51e'
 CLIENT_SECRET_SPOTIFY='ce4bd0c559f149aeb281ecfd8d84da9b'

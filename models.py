@@ -13,8 +13,10 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
     name: Mapped[Optional[str]] = mapped_column(String(100))
-    strava_auth_code: Mapped[Optional[str]] = mapped_column(Text)
-    spotify_auth_code: Mapped[Optional[str]] = mapped_column(Text)
+    strava_access_token: Mapped[Optional[str]] = mapped_column(Text)
+    strava_refresh_token: Mapped[Optional[str]] = mapped_column(Text)
+    spotify_access_token: Mapped[Optional[str]] = mapped_column(Text)
+    spotify_refresh_token: Mapped[Optional[str]] = mapped_column(Text)
 
     activities: Mapped[List["Activity"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
